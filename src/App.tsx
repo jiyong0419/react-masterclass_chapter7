@@ -7,6 +7,7 @@ import {
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { toDoState } from "./atoms";
+import DraggableCard from "./Components/DraggableCard";
 
 const Wrapper = styled.div`
   display: flex;
@@ -31,18 +32,10 @@ const Board = styled.div`
   min-height: 200px;
 `;
 
-const Card = styled.div`
-  background-color: ${(props) => props.theme.cardColor};
-  margin-bottom: 5px;
-  padding: 10px 10px;
-  border-radius: 5px;
-`;
-
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
   const onDragEnd = ({ destination, source, draggableId }: DropResult) => {
     if (!destination) return;
-    console.log(destination, source);
     setToDos((currentToDos) => {
       const toDosCopy = [...currentToDos];
       toDosCopy.splice(source.index, 1);
@@ -59,17 +52,11 @@ function App() {
               {(magic) => (
                 <Board ref={magic.innerRef} {...magic.droppableProps}>
                   {toDos.map((toDo, index) => (
-                    <Draggable key={toDo} draggableId={toDo} index={index}>
-                      {(magic) => (
-                        <Card
-                          ref={magic.innerRef}
-                          {...magic.draggableProps}
-                          {...magic.dragHandleProps}
-                        >
-                          {toDo}
-                        </Card>
-                      )}
-                    </Draggable>
+                    <DraggableCard
+                      key={toDo}
+                      toDo={toDo}
+                      index={index}
+                    ></DraggableCard>
                   ))}
                   {magic.placeholder}
                 </Board>

@@ -13,12 +13,13 @@ interface IAreaProps {
 
 const Wrapper = styled.div`
   width: 200px;
-  padding: 20px 10px 20px 10px;
+  padding-top: 10px;
   background-color: ${(props) => props.theme.boardColor};
   border-radius: 5px;
   min-height: 300px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 `;
 const Title = styled.h1`
   text-align: center;
@@ -28,9 +29,14 @@ const Title = styled.h1`
 `;
 const Area = styled.div<IAreaProps>`
   background-color: ${(props) =>
-    props.isDraggingOver ? "pink" : props.isDraggingFromThis ? "red" : "blue"};
+    props.isDraggingOver
+      ? "#dfe6e9"
+      : props.isDraggingFromThis
+      ? "#b2bec3"
+      : "transparent"};
   flex-grow: 1;
   transition: background-color 0.2s;
+  padding: 20px;
 `;
 
 function Board({ toDos, boardId }: IBoardProps) {

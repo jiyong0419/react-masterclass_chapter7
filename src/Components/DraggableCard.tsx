@@ -1,6 +1,6 @@
+import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import styled from "styled-components";
-import React from "react";
 
 const Card = styled.div<{ isDragging: boolean }>`
   border-radius: 5px;
@@ -12,26 +12,27 @@ const Card = styled.div<{ isDragging: boolean }>`
     props.isDragging ? "0px 2px 5px rgba(0,0,0,0.05)" : "none"};
 `;
 
-interface IDaggableCard {
-  toDo: string;
+interface IDragabbleCardProps {
+  value: string;
   index: number;
 }
 
-function DraggableCard({ toDo, index }: IDaggableCard) {
+function DragabbleCard({ value, index }: IDragabbleCardProps) {
+  console.log(value, "has been rendered");
   return (
-    <Draggable key={toDo} draggableId={toDo} index={index}>
+    <Draggable draggableId={value} index={index}>
       {(magic, snapshot) => (
         <Card
           isDragging={snapshot.isDragging}
           ref={magic.innerRef}
-          {...magic.draggableProps}
           {...magic.dragHandleProps}
+          {...magic.draggableProps}
         >
-          {toDo}
+          {value}
         </Card>
       )}
     </Draggable>
   );
 }
 
-export default React.memo(DraggableCard);
+export default React.memo(DragabbleCard);

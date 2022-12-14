@@ -12,7 +12,6 @@ const Wrapper = styled.div`
   align-items: center;
   height: 100vh;
 `;
-
 const Boards = styled.div`
   display: flex;
   justify-content: center;
@@ -23,8 +22,10 @@ const Boards = styled.div`
 
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
-  const onDragEnd = ({ destination, source, draggableId }: DropResult) => {
+  const onDragEnd = (info: DropResult) => {
+    const { destination, draggableId, source } = info;
     if (!destination) return;
+    // 같은 보드 내에서 드래그가 발생시
     if (destination?.droppableId === source.droppableId) {
       setToDos((toDos) => {
         const boardCopy = [...toDos[source.droppableId]];
@@ -36,14 +37,15 @@ function App() {
         };
       });
     }
+    // 다른 보드로 드래그 이동시
     if (destination.droppableId !== source.droppableId) {
-      setToDos((allBoards) => {
-        const sourceBoard = [...allBoards[source.droppableId]];
-        const destinationBoard = [...allBoards[destination.droppableId]];
+      setToDos((toDos) => {
+        const sourceBoard = [...toDos[source.droppableId]];
+        const destinationBoard = [...toDos[destination.droppableId]];
         sourceBoard.splice(source.index, 1);
         destinationBoard.splice(destination.index, 0, draggableId);
         return {
-          ...allBoards,
+          ...toDos,
           [source.droppableId]: sourceBoard,
           [destination.droppableId]: destinationBoard,
         };
@@ -54,12 +56,8 @@ function App() {
     <DragDropContext onDragEnd={onDragEnd}>
       <Wrapper>
         <Boards>
-          {Object.keys(toDos).map((boardId, index) => (
-            <Board
-              boardId={boardId}
-              key={boardId}
-              toDos={toDos[boardId]}
-            ></Board>
+          {Object.keys(toDos).map((toDo) => (
+            <Board key={toDo} toDoKey={toDo} toDoValue={toDos[toDo]}></Board>
           ))}
         </Boards>
       </Wrapper>

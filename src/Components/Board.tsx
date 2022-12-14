@@ -3,17 +3,18 @@ import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
 import { useRef } from "react";
 
-interface IBoardProps {
-  toDos: string[];
-  boardId: string;
-}
 interface IAreaProps {
   isDraggingFromThis: boolean;
   isDraggingOver: boolean;
 }
 
+interface IBoardProps {
+  toDoKey: string;
+  toDoValue: string[];
+}
+
 const Wrapper = styled.div`
-  width: 200px;
+  width: 300px;
   padding-top: 10px;
   background-color: ${(props) => props.theme.boardColor};
   border-radius: 5px;
@@ -22,12 +23,14 @@ const Wrapper = styled.div`
   flex-direction: column;
   overflow: hidden;
 `;
-const Title = styled.h1`
+
+const Title = styled.h2`
   text-align: center;
   font-weight: 600;
   margin-bottom: 10px;
   font-size: 18px;
 `;
+
 const Area = styled.div<IAreaProps>`
   background-color: ${(props) =>
     props.isDraggingOver
@@ -36,22 +39,24 @@ const Area = styled.div<IAreaProps>`
       ? "#b2bec3"
       : "transparent"};
   flex-grow: 1;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s ease-in-out;
   padding: 20px;
 `;
 
-function Board({ toDos, boardId }: IBoardProps) {
+function Board({ toDoKey, toDoValue }: IBoardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  function onCilck() {
+  const onClick = () => {
     inputRef.current?.focus();
-  }
-
+    setTimeout(() => {
+      inputRef.current?.blur();
+    }, 5000);
+  };
   return (
     <Wrapper>
-      <Title>{boardId}</Title>
-      <input ref={inputRef} type="text" placeholder="grab me" />
-      <button onClick={onCilck}>Click me</button>
-      <Droppable droppableId={boardId}>
+      <Title>{toDoKey}</Title>
+      <input ref={inputRef} placeholder="grab me" />
+      <button onClick={onClick}>Click me</button>
+      <Droppable droppableId={toDoKey}>
         {(magic, snapshot) => (
           <Area
             isDraggingOver={snapshot.isDraggingOver}
@@ -59,12 +64,8 @@ function Board({ toDos, boardId }: IBoardProps) {
             ref={magic.innerRef}
             {...magic.droppableProps}
           >
-            {toDos.map((toDo, index) => (
-              <DraggableCard
-                key={toDo}
-                toDo={toDo}
-                index={index}
-              ></DraggableCard>
+            {toDoValue.map((value, index) => (
+              <DraggableCard key={value} value={value} index={index} />
             ))}
             {magic.placeholder}
           </Area>
@@ -73,5 +74,4 @@ function Board({ toDos, boardId }: IBoardProps) {
     </Wrapper>
   );
 }
-
 export default Board;

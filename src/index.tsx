@@ -28,16 +28,13 @@ time, mark, audio, video {
     vertical-align: baseline;
 }
 article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
+footer, header, hgroup, main,menu, nav, section {
     display: block;
 }
 body {
     line-height: 1;
-  font-family: 'Source Sans Pro', sans-serif;
-  background-color: ${(props) => props.theme.bgColor};
-  color: black
 }
-ol, ul {
+menu, ol, ul {
     list-style: none;
 }
 blockquote, q {
@@ -52,12 +49,19 @@ table {
     border-collapse: collapse;
     border-spacing: 0;
 }
+*{
+  box-sizing: border-box;
+}
+body{
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 300;
+  background-color: ${(props) => props.theme.bgColor};
+  color: black;
+  line-height: 1.2;
+}
 a{
   text-decoration: none;
   color: inherit;
-}
-*{
-  box-sizing: border-box;
 }
 `;
 

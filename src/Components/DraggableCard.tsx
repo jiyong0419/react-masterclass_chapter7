@@ -13,14 +13,14 @@ const Card = styled.div<{ isDragging: boolean }>`
 `;
 
 interface IDragabbleCardProps {
-  value: string;
+  valueId: number;
+  valueText: string;
   index: number;
 }
 
-function DragabbleCard({ value, index }: IDragabbleCardProps) {
-  console.log(value, "has been rendered");
+function DragabbleCard({ valueId, valueText, index }: IDragabbleCardProps) {
   return (
-    <Draggable draggableId={value} index={index}>
+    <Draggable draggableId={valueId + ""} index={index}>
       {(magic, snapshot) => (
         <Card
           isDragging={snapshot.isDragging}
@@ -28,7 +28,7 @@ function DragabbleCard({ value, index }: IDragabbleCardProps) {
           {...magic.dragHandleProps}
           {...magic.draggableProps}
         >
-          {value}
+          {valueText}
         </Card>
       )}
     </Draggable>

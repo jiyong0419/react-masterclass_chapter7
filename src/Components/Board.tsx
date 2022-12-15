@@ -1,7 +1,8 @@
 import { Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
-import { useRef } from "react";
+import { useForm } from "react-hook-form";
+import { IToDo } from "../atoms";
 
 interface IAreaProps {
   isDraggingFromThis: boolean;
@@ -10,7 +11,11 @@ interface IAreaProps {
 
 interface IBoardProps {
   toDoKey: string;
-  toDoValue: string[];
+  toDoValue: IToDo[];
+}
+
+interface IForm {
+  toDo: string;
 }
 
 const Wrapper = styled.div`
@@ -43,19 +48,29 @@ const Area = styled.div<IAreaProps>`
   padding: 20px;
 `;
 
+const Form = styled.form`
+  width: 100%;
+  input {
+    width: 100%;
+  }
+`;
+
 function Board({ toDoKey, toDoValue }: IBoardProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const onClick = () => {
-    inputRef.current?.focus();
-    setTimeout(() => {
-      inputRef.current?.blur();
-    }, 5000);
+  const { register, handleSubmit, setValue } = useForm<IForm>();
+  const onValid = ({ toDo }: IForm) => {
+    console.log(toDo);
+    setValue("toDo", "");
   };
   return (
     <Wrapper>
       <Title>{toDoKey}</Title>
-      <input ref={inputRef} placeholder="grab me" />
-      <button onClick={onClick}>Click me</button>
+      <Form onSubmit={handleSubmit(onValid)}>
+        <input
+          {...register("toDo", { required: true })}
+          type="text"
+          placeholder={`Add task on ${toDoKey}`}
+        />
+      </Form>
       <Droppable droppableId={toDoKey}>
         {(magic, snapshot) => (
           <Area
@@ -65,7 +80,12 @@ function Board({ toDoKey, toDoValue }: IBoardProps) {
             {...magic.droppableProps}
           >
             {toDoValue.map((value, index) => (
-              <DraggableCard key={value} value={value} index={index} />
+              <DraggableCard
+                key={value.id}
+                valueId={value.id}
+                valueText={value.text}
+                index={index}
+              />
             ))}
             {magic.placeholder}
           </Area>

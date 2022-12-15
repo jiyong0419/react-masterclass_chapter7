@@ -5,14 +5,13 @@ export interface IToDo {
   text: string;
 }
 
-interface IToDoState {
+interface IFoodBoards {
   [key: string]: IToDo[];
 }
-export const toDoState = atom<IToDoState>({
-  key: "toDo",
+export const FoodBoards = atom<IFoodBoards>({
+  key: "FoodBoards",
   default: {
-    "To Do": [],
-    Doing: [],
-    Done: [],
+    "좋아하는 음식": [],
+    "싫어하는 음식": [],
   },
 });

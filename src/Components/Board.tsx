@@ -2,7 +2,7 @@ import { Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
 import { useForm } from "react-hook-form";
-import { IToDo, toDoState } from "../atoms";
+import { IToDo, FoodBoards } from "../atoms";
 import { useSetRecoilState } from "recoil";
 
 interface IAreaProps {
@@ -11,12 +11,12 @@ interface IAreaProps {
 }
 
 interface IBoardProps {
-  toDoKey: string;
-  toDoValue: IToDo[];
+  boardTitle: string;
+  boardList: IToDo[];
 }
 
 interface IForm {
-  toDo: string;
+  food: string;
 }
 
 const Wrapper = styled.div`
@@ -56,33 +56,33 @@ const Form = styled.form`
   }
 `;
 
-function Board({ toDoKey, toDoValue }: IBoardProps) {
-  const setToDos = useSetRecoilState(toDoState);
+function Board({ boardTitle, boardList }: IBoardProps) {
+  const setFoodBoards = useSetRecoilState(FoodBoards);
   const { register, handleSubmit, setValue } = useForm<IForm>();
-  const onValid = ({ toDo }: IForm) => {
-    const newToDo = {
+  const onValid = ({ food }: IForm) => {
+    const newFood = {
       id: Date.now(),
-      text: toDo,
+      text: food,
     };
-    setToDos((toDos) => {
+    setFoodBoards((foodBoards) => {
       return {
-        ...toDos,
-        [toDoKey]: [newToDo, ...toDos[toDoKey]],
+        ...foodBoards,
+        [boardTitle]: [...foodBoards[boardTitle], newFood],
       };
     });
-    setValue("toDo", "");
+    setValue("food", "");
   };
   return (
     <Wrapper>
-      <Title>{toDoKey}</Title>
+      <Title>{boardTitle}</Title>
       <Form onSubmit={handleSubmit(onValid)}>
         <input
-          {...register("toDo", { required: true })}
+          {...register("food", { required: true })}
           type="text"
-          placeholder={`Add task on ${toDoKey}`}
+          placeholder={`Add task on food`}
         />
       </Form>
-      <Droppable droppableId={toDoKey}>
+      <Droppable droppableId={boardTitle}>
         {(magic, snapshot) => (
           <Area
             isDraggingOver={snapshot.isDraggingOver}
@@ -90,11 +90,11 @@ function Board({ toDoKey, toDoValue }: IBoardProps) {
             ref={magic.innerRef}
             {...magic.droppableProps}
           >
-            {toDoValue.map((value, index) => (
+            {boardList.map((food, index) => (
               <DraggableCard
-                key={value.id}
-                valueId={value.id}
-                valueText={value.text}
+                key={food.id}
+                foodId={food.id}
+                foodText={food.text}
                 index={index}
               />
             ))}
